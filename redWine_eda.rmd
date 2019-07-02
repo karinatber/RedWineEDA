@@ -1,0 +1,412 @@
+Red Wine Exploration
+========================================================
+### by Karina
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+library(ggplot2)
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+redwines <- read.csv('wineQualityReds.csv')
+length(redwines[,1])
+summary(redwines)
+```
+
+# Univariate Plots Section
+
+```{r echo=FALSE, summary_Univariate_Plots}
+# first column is the index
+summary(redwines[,2:13])
+```
+
+Here is the summary of all attributes that are present in dataset. It can be
+noticed that for quality column, in a scale 0-10, the maximum value observed\
+here is 8 and the minimum is 3 with a mean value of ca. 5.6. 
+
+
+```{r echo=FALSE, Univariate_fixedacidity}
+ggplot(aes(x = fixed.acidity), data = redwines) +
+  geom_histogram(binwidth = 0.5) +
+  scale_x_continuous() +
+  xlab('Fixed acidity (g / dm^3)')
+```
+
+It seems for the figure above, a normal distribution of the observations according to their count.
+
+```{r echo=FALSE, Univariate_volatileacidity, message=FALSE}
+ggplot(aes(x = volatile.acidity), data = redwines) +
+  geom_histogram(binwidth = 0.02, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0,2), breaks = seq(0,2,0.2)) +
+  xlab('Volatile acidity (g / dm^3)')
+```
+
+Here above we can notice that the majority of the observations have volatile acidity\
+above 0.1 and below 1.0.
+
+```{r echo=FALSE, Univariate_ciitricacid}
+ggplot(aes(x = citric.acid), data = redwines) +
+  geom_histogram(binwidth = 0.01, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0,1), breaks = seq(0,1,0.1)) +
+  xlab('Citric acid (g / dm^3)')
+```
+
+The citric acid are all below value of 0.8. But there is some value near 0.5\
+that has a count very higher than for the other values.
+
+```{r echo=FALSE, Univariate_residualsugar}
+ggplot(aes(x = residual.sugar), data = redwines) +
+  geom_histogram(binwidth = 0.1, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0,16), breaks = seq(0,16,1)) +
+  xlab('Residual sugar (g / dm^3)')
+```
+
+The great majority of observations have value of residual sugar above 1 and\
+below 3.5.
+
+```{r echo=FALSE, Univariate_chlorides}
+by(redwines$chlorides, redwines$quality, summary)
+ggplot(aes(x = chlorides), data = redwines) +
+  geom_histogram(binwidth = 0.005, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0, 0.7), breaks = seq(0,0.7,0.1)) +
+  xlab('Chlorides (g / dm^3)')
+```
+
+
+```{r echo=FALSE, Univariate_sulfurdioxide}
+ggplot(aes(x = free.sulfur.dioxide), data = redwines) +
+  geom_histogram(binwidth = 1, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0, 80), breaks = seq(0,100,10)) +
+  xlab('Free sulfur dioxide (mg / dm^3)')
+```
+
+Concentration of observations is on lower values and decreases for higher values.
+
+```{r echo=FALSE, Univariate_totalsulfur_dioxide}
+ggplot(aes(x = total.sulfur.dioxide), data = redwines) +
+  geom_histogram(binwidth = 2, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0, 300), breaks = seq(0,300,15)) +
+  xlab('Total sulfur dioxide (mg / dm^3)')
+```
+
+Almost for all characteristics, the values of the oberservations concentrate on\
+the first half of the range of the existing values.
+
+```{r echo=FALSE, Univariate_density}
+ggplot(aes(x = density), data = redwines) +
+  geom_histogram(binwidth = 0.0005, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0.98, 1.02), breaks = seq(0.98,1.01,0.005)) +
+  xlab('Density (g / dm^3)')
+```
+
+The majority of wines here presented have density close to 0.997, a little\
+lower than the value of the water's density (1.0).
+
+```{r echo=FALSE, Univariate_ph}
+by(redwines$pH, redwines$quality, summary)
+ggplot(aes(x = pH), data = redwines) +
+  geom_histogram(binwidth = 0.01, na.rm = TRUE) +
+  scale_x_continuous(limits = c(2, 4), breaks = seq(2, 4, 0.2))
+```
+
+```{r echo=FALSE, Univariate_summaryph}
+summary(redwines$pH)
+```
+
+Wines are typically acid, because of this a pH level less than 7 is expected.\
+It can be noticed that the red wines from the observations have pH level of\
+mean value 3.311 and maximum and minimum value of, respectively, 2.740 and 4.010.
+
+```{r echo=FALSE, Univariate_sulphates}
+ggplot(aes(x = sulphates), data = redwines) +
+  geom_histogram(binwidth = 0.01, na.rm = TRUE) +
+  scale_x_continuous(limits = c(0, 2), breaks = seq(0, 2, 0.1)) +
+  xlab('Sulphates (g / dm^3)')
+```
+
+
+```{r echo=FALSE, Univariate_alcohol}
+ggplot(aes(x = alcohol), data = redwines) +
+  geom_histogram(binwidth = 0.1, na.rm = TRUE) +
+  scale_x_continuous(limits = c(7, 15), breaks = seq(0, 15, 1)) +
+  xlab('Alcohol (% by volume)')
+```
+
+
+```{r echo=FALSE, Univariate_quality}
+ggplot(aes(x = quality), data = redwines) +
+  geom_histogram(binwidth = 0.5) +
+  xlab('Quality')
+```
+
+The median for quality is 6 and the mean is around 5.36, but values are\
+integers. On first notice, the wines are in general of medium quality.
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+The dataset is composed of 1599 red wine observations, for which 11 features \ 
+were extracted from physicochemical tests and 1 feature extracted through \
+sensorial data.
+
+### What is/are the main feature(s) of interest in your dataset?
+The main feature of interest here in this dataset is the quality.
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+The ones that will help me I think will be residual sugar, pH and maybe alcohol.
+
+### Did you create any new variables from existing variables in the dataset?
+
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+All values were used in their raw form, except for those where there were some\
+missing values, these were removed when plotting graphs.
+
+# Bivariate Plots Section
+
+```{r echo=FALSE, Bivariate_residuals_qlty}
+ggplot(aes(x = quality, y = residual.sugar), data = redwines) +
+  geom_jitter() +
+  ylab('residual sugar (g / dm3)')
+```
+
+In this graph above, for lower levels of residual sugar (lower than 4 g/dm^3) concentration of points is higher and for higher levels, this distribution becomes sparse. It seems that residual sugar don't influence much in quality of wine.
+
+```{r echo=FALSE, Bivariate_fixeda_qlty}
+ggplot(aes(x = quality, y = fixed.acidity), data = redwines) +
+  geom_jitter() +
+  ylab('fixed acidity (g / dm^3)')
+```
+
+It can be noticed that for some value a little lower than 8 g/dm^3 of fixed acidity, the concentration of points on qualities 5 and 6 is the highest. On the other hand, for quality 7 and above the distribution of points is sparse.
+
+```{r echo=FALSE, Bivariate_totalsdiox_qlty}
+ggplot(aes(x = quality, y = total.sulfur.dioxide), data = redwines) +
+  geom_jitter() +
+  ylab('total sulfur dioxide (mg / dm^3)')
+```
+
+The main point to notice for the graph above is that for values of total sulfur dioxide lower than ca. 50 mg/dm^3 the concentration of points is higher for quality 5 and 6 and a little less for 7. Moreover, for values above 50 mg/dm^3, the concentration of points resides in qualities 5 and 6 and for 100 and above in quality 5 (except for some outliers present in dataset). 
+
+```{r echo=FALSE, Bivariate_volatilea_qlty}
+ggplot(aes(x = quality, y = volatile.acidity), data = redwines) +
+  geom_jitter() +
+  ylab('volatile acidity (g / dm^3)')
+```
+
+
+```{r echo=FALSE, Bivariate_citrica_qlty}
+ggplot(aes(x = quality, y = citric.acid), data = redwines) +
+  geom_jitter() +
+  ylab('citric acid (g / dm^3)')
+```
+
+
+```{r echo=FALSE, Bivariate_sulphates_qlty}
+ggplot(aes(x = quality, y = sulphates), data = redwines) +
+  geom_jitter() +
+  ylab('sulphates (g / dm3)')
+```
+
+
+```{r echo=FALSE, Bivariate_alcohol_qlty}
+ggplot(aes(x = quality, y = alcohol), data = redwines) +
+  geom_jitter() +
+  ylab('alcohol (% by volume)')
+```
+
+All the characteristics plotted here showed some influence in ethe quality of 
+wine while the rest of the characteristics didn't showed as much importance. 
+For these graphs above we can see approximately that for some value the 
+concentrations of points is higher for qualities 5 and 6 (that is near to the 
+mean value) and for other value these concentration tends to decrease while the 
+one for higher qualities tends to increase.
+
+```{r echo=FALSE, Bivariate_boxplot_sulphates}
+ggplot(aes(x = quality, y = sulphates, group = quality), data = redwines) +
+  geom_boxplot() +
+  ylab('sulphates (g / dm3)')
+```
+
+```{r echo=FALSE, Bivariate_boxplot_alcohol}
+ggplot(aes(x = quality, y = alcohol, group = quality), data = redwines) +
+  geom_boxplot() +
+  ylab('alcohol (% by volume)')
+```
+
+For these boxplots, it is clear that for different qualities there are different mean values for alcohol and sulphates, indicating some correlation between the characteristic and wine's quality.
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+Since the main goal of this analysis is to find some relationship between the 
+quality of wines and their characteristics.All bivarite analysis were made based on quality values.
+As expected, some characteristics seem not to influence in quality of wine so well, as it could be noticed for residual sugar. It did tell us just that most wines have low level of residual sugar but some can have higher level.
+On the other hand, some characteristics may influence quality somehow. That is the case of volatile acidity, citric acid, sulphates and alcohol. 
+For total sulfur dioxide, something interesting could be noticed. For lower levels, there are observations from different qualities (more concentrated on qualiities 5 and 6), but for some reason, as this level increases, concentration of observations tends to reside only on values 5 and 6, that is, if wine has strong presence of total sulfur dioxide, chances are that its quality will be a medium one.
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+Among other features, it seemed that they does not incluence quality as much, as in the case of residual sugar.
+
+
+### What was the strongest relationship you found?
+The strongest relationship found, confirmed by the boxplot, was the relation between alcohol and quality.
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_alc_sulpha}
+ggplot(redwines) + 
+    geom_point(aes(alcohol, sulphates, color=quality, name='Quality'), 
+               alpha=1.0) +
+    labs(x='Alcohol (% by volume)', y = 'Sulphates (g/dm^3)', 
+         title='Alcohol vs sulphates, by quality') 
+```
+
+
+```{r echo=FALSE, Multivariate_alc_totalsulf}
+ggplot(redwines) + 
+    geom_point(aes(alcohol, total.sulfur.dioxide, color=quality, name='Quality'), 
+               alpha=1.0) +
+    labs(x='Alcohol (% by volume)', y = 'Total sulfur dioxide (mg/dm^3)', 
+         title='Alcohol vs total sulfur dioxide, by quality') 
+```
+
+
+```{r echo=FALSE, Multivariate_sulph_totalsulf}
+ggplot(redwines) + 
+    geom_point(aes(sulphates, total.sulfur.dioxide, color=quality, name='Quality'), 
+               alpha=1.0) +
+    labs(x='Sulphates (g/dm^3)', y = 'Total sulfur dioxide (mg/dm^3)', 
+         title='Sulphates vs total sulfur dioxide, by quality') 
+```
+
+
+```{r echo=FALSE, Multivariate_dens_chlo}
+ggplot(redwines) + 
+    geom_point(aes(density, chlorides, color=quality, name='Quality'), 
+               alpha=1.0) +
+    labs(x='Density (% by volume)', y = 'Chlorides (mg/dm^3)', 
+         title='Density vs chlorides, by quality') 
+```
+
+As it can be noticed, it is a little bit difficult to see the different categories of qualities in only one graph, that is why there are some facet grids below, so the different distribution for different qualities are clear.
+
+```{r echo=FALSE, Multivariate_facet_alc_sulph}
+# facet grid by quality
+ggplot(aes(x = alcohol, y = sulphates), data = redwines) +
+  geom_point() +
+  facet_wrap(~quality) +
+  ylab('sulphates (g / dm^3)') +
+  xlab('alcohol (% by volume)')
+```
+
+Through the graphs above, it is clear that for medium quality (i.e. for values 5) the distribution is higher on the bottom left of the graph, indicating lower values for sulphates and alcohol. For quality a little higher, 6, the distribution tends to go to the middle of the graph, but still in the bottom, indicating values a little higher for alcohol. The interesting part is for the highest qualities 7 and 8, the distribution tends to get little far from the minium values of sulphates while alcohol levels continues increasing.
+
+```{r echo=FALSE, Multivariate_facet_ph_dens}
+ggplot(aes(x = pH, y = density), data = redwines) +
+  geom_point() +
+  facet_wrap(~quality) +
+  ylab('density (g / dm^3)')
+```
+
+The concentration seems to be always in the center of the graph for all quality levels.
+
+```{r echo=FALSE, Multivariate_facet_alc_ph}
+ggplot(aes(x = alcohol, y = pH), data = redwines) +
+  geom_point() +
+  facet_wrap(~quality) +
+  xlab('alcohol (% by volume)')
+```
+
+Here we notice a tendency for the points concentrate from the left to the right of the graphs, as the quality grows. The range of values that contains the points in the vertical direction doesn't seem to change significantly.
+
+```{r echo=FALSE, Multivariate_facet_sugar_alc}
+ggplot(aes(x = alcohol, y = residual.sugar), data = redwines) +
+  geom_point() +
+  facet_wrap(~quality) +
+  ylab('residual sugar (g / dm^3)') +
+  xlab('alcohol (% by volume)')
+```
+
+Residual sugar doesn't seem to be relavant to evaluate quality of wine.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+The combination of the 2 characteristics that most seemed to have higher correlation with quality, when combined together, can show some more insights. The 2 features that individually seemed to be the ones who showed more insights about our feature of interest, when combined together, could give us some insights, but not as significant to certificate a good correlation. Other features, even combined, couldn't give us any good insight, e.g. for pH vs Density facet grid by quality, all points seems to be concentrated on the same area for different facets, leading us to think there is no clear correlation among these features. 
+
+### Were there any interesting or surprising interactions between features?
+It was surprising to notice that the sulphates and alcohol are the main characteristics that are pleasant for the human taste, since the quality feature values are based on sensory data according to the source's information. 
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+ggplot(aes(x = alcohol, y = sulphates), data = redwines) +
+  geom_point() +
+  facet_wrap(~quality) +
+  ylab('sulphates (g / dm^3)') +
+  xlab('alcohol (% by volume)')
+```
+
+Here is the graph combining the two features that seemed to show more insights about quality of wine than the others presented in the dataset.
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+ggplot(aes(x = alcohol, y = residual.sugar), data = redwines) +
+  geom_point() +
+  facet_wrap(~quality) +
+  ylab('residual sugar (g / dm^3)') +
+  xlab('alcohol (% by volume)')
+```
+
+Here is a facet grid graph to enforce that the sweetness of a wine may not be one super relevant feature to be consirdered when evaluating its quality.
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+ggplot(redwines) + 
+    geom_point(aes(density, chlorides, color=quality, name='Quality'), 
+               alpha=1.0) +
+    labs(x='Density (% by volume)', y = 'Chlorides (mg/dm^3)', 
+         title='Density vs chlorides, by quality') 
+```
+
+The final plot for the combinantion of density and chlorides, it may not be relevant to determine whether a wine is good or not, but we can learn that there is a linear dependency between its concentration of chlorides and its density. 
+
+------
+
+# Reflection
+
+This exploratory data analysis could bring some points of discussion: Based on the data source information, the quality feature was extracted from sensorial data and all other features were extracted through physicochemical tests. Another point is that some of these physicochemical may be correlated to each other, e.g. the pH level and the presence of acid. So one difficulty found in these analysis was to find which of the features are not related to each other and could bring us insights about the difference between a good and not so tasty wine.
+It is kind of intuitive to think that a sweeter wine tends to be more pleasant. But does it? The analysis shows that the observations of quality 5, 6, 7 and 8 are all occupying almost the same region of bottom of the graph (on plot 2), i.e., a sweeter wine doesn't make it better. 
+The surprise here was to check that alcohol influences a lot, the more percentage of alcohol a wine has, the more pleasant it becomes, the reason can be of several ones, but this gets out of the scope of this work. 
+Other surprise is that sulphates also can influence (less than alcohol). According to the data information, sulphates are used as antimicrobial and antioxidant additives and for some reason their concentration tend to grow as quality grows. Some techniques of suppervised learning could be applied here in order to achieve better results and get some better features with feature selection methods.
+
+## Reference
+
+P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. \
+Modeling wine preferences by data mining from physicochemical properties. \
+In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
